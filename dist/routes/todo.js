@@ -10,26 +10,28 @@ router.get('/', (req, res, next) => {
     res.status(200).json({ todos: todos });
 });
 router.post('/add', (req, res, next) => {
+    const body = req.body;
     const newtodo = {
         id: new Date().toISOString(),
-        text: req.body.text
+        text: body.text
     };
     todos.push(newtodo);
-    res.status(201).json({ message: 'updated', todos: newtodo });
+    res.status(201).json({ message: 'added', todos: newtodo });
 });
 router.put('/update/:id', (req, res, next) => {
-    const id = req.params.id;
-    const todoindex = todos.findIndex(todoitem => {
-        todoitem.id === id;
-    });
+    const params = req.params;
+    const id = params.id;
+    const todoindex = todos.findIndex((todoitem) => todoitem.id === id);
     if (todoindex >= 0) {
-        todos[todoindex] = { id: todos[todoindex].id, text: req.body.text };
+        const body = req.body;
+        todos[todoindex] = { id: todos[todoindex].id, text: body.text };
         return res.status(200).json({ message: 'updated', todos: todos });
     }
     res.status(205).json({ message: 'unable to find data' });
 });
 router.delete('/remove/:id', (req, res, next) => {
-    todos = todos.filter(todoitem => todoitem.id !== req.params.id);
+    const params = req.params;
+    todos = todos.filter(todoitem => todoitem.id !== params.id);
     res.status(207).json({ message: 'deleted', todos: todos });
 });
 exports.default = router;
